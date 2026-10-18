@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoidHeds | Servidor de Minecraft</title>
+    <style>
+        :root {
+            --primary-color: #9b28b2;
+            --secondary-color: #bfa8d8;
+            --dark-bg: #7100e2;
+            --text-color: #ffffff;
+            --accent-color: #e2c2f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            background-image: url("./img/bg.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 20px var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .ip-container {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 1.5rem 3rem;
+            border-radius: 50px;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+
+        .ip-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--secondary-color);
+        }
+
+        .ip-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text-color);
+            letter-spacing: 1px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            background: transparent;
+            color: var(--text-color);
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            border: 2px solid var(--secondary-color);
+            font-size: 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        #copy-alert {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: var(--accent-color);
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎮 VOIDHEX 🎮</h1>
+        <p class="subtitle">La experiencia definitiva de Supervivencia</p>
+    </header>
+
+    <div class="ip-container" onclick="copyIP()">
+        <span class="ip-text" id="server-ip">mc.voidhex.lat</span>
+    </div>
+    <p id="copy-alert">¡IP Copiada con éxito!</p>
+
+    <div class="cta-buttons">
+        <a href="#" class="btn btn-primary">Tienda</a>
+        <a href="https://discord.gg/6cN9dhapC4" class="btn" target="_blank">Discord</a>
+        <a href="#" class="btn">Wiki</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 VoidHex. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function copyIP() {
+            const ipText = document.getElementById('server-ip').innerText;
+            navigator.clipboard.writeText(ipText).then(() => {
+                const alertText = document.getElementById('copy-alert');
+                alertText.style.opacity = '1';
+                setTimeout(() => {
+                    alertText.style.opacity = '0';
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+            });
+        }
+    </script>
+</body>
+
+</html>
