@@ -1,160 +1,690 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoidHex | Servidor de Minecraft</title>
+    <title>Void Hex | Servidor de Minecraft Survival Custom</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: {
+                            900: '#07050d',
+                            800: '#0f0a1c',
+                            700: '#1b122f',
+                            accent: '#8b5cf6',
+                            neon: '#a855f7',
+                            glow: '#c084fc',
+                            cyan: '#06b6d4'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon': '0 0 25px -5px rgba(168, 85, 247, 0.4)',
+                        'neon-lg': '0 0 50px -10px rgba(168, 85, 247, 0.6)',
+                        'cyan-glow': '0 0 25px -5px rgba(6, 182, 212, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary-color: #9b28b2;
-            --secondary-color: #bfa8d8;
-            --dark-bg: #7100e2;
-            --text-color: #ffffff;
-            --accent-color: #e2c2f7;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        /* Estilos personalizados para animaciones y canvas */
         body {
-            background-color: var(--dark-bg);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-            background-image: url("./img/bg.jpg");
-            background-size: cover;
-            background-position: center;
+            background-color: #07050d;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        
+        .glass-panel {
+            background: rgba(15, 10, 28, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
         }
 
-        header {
-            margin-bottom: 2rem;
+        .glass-card {
+            background: rgba(27, 18, 47, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        h1 {
-            font-size: 4rem;
-            color: var(--primary-color);
-            text-shadow: 0 0 20px var(--secondary-color);
-            margin-bottom: 0.5rem;
+        .glass-card:hover {
+            border-color: rgba(168, 85, 247, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.3);
         }
 
-        p.subtitle {
-            font-size: 1.2rem;
-            color: var(--secondary-color);
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #c084fc 50%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .ip-container {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 1.5rem 3rem;
-            border-radius: 50px;
-            border: 2px solid var(--primary-color);
-            box-shadow: 0 0 15px var(--primary-color);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            margin-bottom: 2rem;
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #ffffff 0%, #67e8f9 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .ip-container:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px var(--secondary-color);
+        /* Animación de pulso continuo */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; filter: blur(40px); }
+            50% { opacity: 0.8; filter: blur(60px); }
         }
 
-        .ip-text {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--text-color);
-            letter-spacing: 1px;
+        .bg-glow {
+            animation: pulseGlow 6s infinite ease-in-out;
         }
 
-        .cta-buttons {
-            display: flex;
-            gap: 1.5rem;
+        /* Ocultar barra de scroll para estetica limpia */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .btn {
-            background: transparent;
-            color: var(--text-color);
-            padding: 1rem 2rem;
-            border-radius: 5px;
-            border: 2px solid var(--secondary-color);
-            font-size: 1rem;
-            font-weight: bold;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
+        ::-webkit-scrollbar-track {
+            background: #07050d;
         }
-
-        .btn:hover {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 15px var(--primary-color);
+        ::-webkit-scrollbar-thumb {
+            background: #2e1d4a;
+            border-radius: 4px;
         }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        #copy-alert {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            color: var(--accent-color);
-            margin-top: 1rem;
-            font-weight: bold;
-        }
-
-        footer {
-            margin-top: 3rem;
-            font-size: 0.9rem;
-            color: var(--secondary-color);
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5cf6;
         }
     </style>
 </head>
-<body>
+<body class="font-sans antialiased selection:bg-void-neon selection:text-white">
 
-    <header>
-        <h1>🎮 VOIDHEX 🎮</h1>
-        <p class="subtitle">La experiencia definitiva de Supervivencia</p>
-    </header>
+    <!-- Canvas de partículas de fondo -->
+    <canvas id="voidCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
 
-    <div class="ip-container" onclick="copyIP()">
-        <span class="ip-text" id="server-ip">mc.voidhex.lat</span>
-    </div>
-    <p id="copy-alert">¡IP Copiada con éxito!</p>
+    <!-- Resplandores de fondo (Glow Orbs) -->
+    <div class="fixed -top-40 -left-40 w-96 h-96 bg-void-neon/30 rounded-full bg-glow pointer-events-none z-0"></div>
+    <div class="fixed top-1/2 -right-40 w-96 h-96 bg-void-cyan/20 rounded-full bg-glow pointer-events-none z-0" style="animation-delay: 3s;"></div>
 
-    <div class="cta-buttons">
-        <a href="#" class="btn">Tienda</a>
-        <a href="https://discord.gg/6cN9dhapC4" class="btn" target="_blank">Discord</a>
-        <a href="#" class="btn">Wiki</a>
-    </div>
+    <!-- Navegación -->
+    <nav class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-void-accent/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-void-accent to-void-cyan p-0.5 shadow-neon group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-void-900 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-cube text-void-neon text-xl group-hover:rotate-12 transition-transform"></i>
+                    </div>
+                </div>
+                <span class="font-display text-2xl font-black tracking-wider text-white">VOID <span class="text-void-neon">HEX</span></span>
+            </a>
 
-    <footer>
-        <p>&copy; 2026 VoidHex. Todos los derechos reservados.</p>
+            <!-- Enlaces Desktop -->
+            <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-300">
+                <a href="#inicio" class="hover:text-void-neon transition-colors">Inicio</a>
+                <a href="#estado" class="hover:text-void-neon transition-colors">Estado</a>
+                <a href="#modalidades" class="hover:text-void-neon transition-colors">Modalidades</a>
+                <a href="#tienda" class="hover:text-void-neon transition-colors">Tienda</a>
+                <a href="#faq" class="hover:text-void-neon transition-colors">FAQ</a>
+            </div>
+
+            <!-- Botón Jugar Header -->
+            <div class="hidden md:block">
+                <button onclick="copyIP()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-void-accent to-purple-600 text-white font-bold text-sm shadow-neon hover:shadow-neon-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad"></i>
+                    <span>Unirse Ahora</span>
+                </button>
+            </div>
+
+            <!-- Botón Menú Mobile -->
+            <button id="mobileMenuBtn" class="md:hidden text-2xl text-gray-300 hover:text-white">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Menú Mobile Desplegable -->
+        <div id="mobileMenu" class="hidden md:hidden glass-panel border-t border-void-accent/20 px-6 py-4 flex flex-col gap-4 text-center font-semibold">
+            <a href="#inicio" onclick="toggleMobileMenu()" class="hover:text-void-neon py-2">Inicio</a>
+            <a href="#estado" onclick="toggleMobileMenu()" class="hover:text-void-neon py-2">Estado</a>
+            <a href="#modalidades" onclick="toggleMobileMenu()" class="hover:text-void-neon py-2">Modalidades</a>
+            <a href="#tienda" onclick="toggleMobileMenu()" class="hover:text-void-neon py-2">Tienda</a>
+            <a href="#faq" onclick="toggleMobileMenu()" class="hover:text-void-neon py-2">FAQ</a>
+            <button onclick="copyIP(); toggleMobileMenu();" class="w-full py-3 rounded-xl bg-void-accent text-white font-bold shadow-neon">
+                Copiar IP
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="relative z-10 pt-20">
+
+        <!-- HERO SECTION -->
+        <section id="inicio" class="min-h-[90vh] flex items-center justify-center relative px-4 sm:px-6 lg:px-8 py-20">
+            <div class="max-w-5xl mx-auto text-center space-y-8">
+                
+                <!-- Badge Versión -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-xs sm:text-sm font-semibold text-void-glow border border-void-neon/30">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Compatibilidad Java & Bedrock (1.20.x)</span>
+                </div>
+
+                <!-- Título Principal -->
+                <h1 class="font-display text-5xl sm:text-7xl md:text-8xl font-black tracking-tight uppercase">
+                    Descubre el <br class="hidden sm:inline"/>
+                    <span class="text-gradient">Abismo del Void</span>
+                </h1>
+
+                <!-- Subtítulo / Descripción -->
+                <p class="max-w-2xl mx-auto text-gray-400 text-base sm:text-lg md:text-xl font-normal leading-relaxed">
+                    Una experiencia Survival Custom sin precedentes. Economía balanceada, sistemas únicos de encantamientos, misiones diarias y eventos semanales sin lag.
+                </p>
+
+                <!-- Botones de Acción -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <!-- Botón Copiar IP -->
+                    <button onclick="copyIP()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-void-accent via-purple-600 to-void-cyan text-white font-bold text-lg shadow-neon hover:shadow-neon-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 group">
+                        <i class="fa-solid fa-copy group-hover:rotate-12 transition-transform"></i>
+                        <span>play.voidhex.lat</span>
+                    </button>
+
+                    <!-- Botón Discord -->
+                    <a href="https://discord.gg" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl glass-card text-white font-bold text-lg hover:bg-void-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+                        <i class="fa-brands fa-discord text-indigo-400 text-xl"></i>
+                        <span>Unirse a Discord</span>
+                    </a>
+                </div>
+
+                <!-- Indicador de Scroll -->
+                <div class="pt-16 animate-bounce">
+                    <a href="#estado" class="text-gray-500 hover:text-void-neon transition-colors text-xl">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN ESTADO DEL SERVIDOR -->
+        <section id="estado" class="py-16 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto">
+                <div class="glass-panel p-8 sm:p-10 rounded-3xl relative overflow-hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center">
+                        
+                        <!-- Status Badge -->
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold uppercase tracking-widest text-gray-400">Estado del Red</span>
+                            <div class="flex items-center justify-center gap-3">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_12px_#10b981]"></span>
+                                <span class="font-display text-2xl font-bold text-white">EN LÍNEA</span>
+                            </div>
+                        </div>
+
+                        <!-- Contador Jugadores -->
+                        <div class="space-y-2 border-y md:border-y-0 md:border-x border-void-accent/20 py-6 md:py-0">
+                            <span class="text-xs font-bold uppercase tracking-widest text-gray-400">Jugadores Activos</span>
+                            <div class="font-display text-4xl sm:text-5xl font-black text-void-glow flex items-center justify-center gap-2">
+                                <span id="playerCount">248</span>
+                                <span class="text-xl text-gray-500 font-sans font-normal">/ 500</span>
+                            </div>
+                        </div>
+
+                        <!-- Versión -->
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold uppercase tracking-widest text-gray-400">Versiones Soportadas</span>
+                            <div class="font-display text-xl font-bold text-white">
+                                1.16 - 1.20.x
+                            </div>
+                            <span class="text-xs text-void-cyan">Java & Bedrock Crossplay</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARACTERÍSTICAS / MODALIDADES -->
+        <section id="modalidades" class="py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto space-y-12">
+                
+                <div class="text-center space-y-4">
+                    <h2 class="font-display text-3xl sm:text-5xl font-black text-white uppercase">
+                        Nuestras <span class="text-void-neon">Características</span>
+                    </h2>
+                    <p class="text-gray-400 max-w-xl mx-auto text-base">
+                        Diseñado cuidadosamente por jugadores para jugadores. Experimenta un survival verdaderamente mejorado.
+                    </p>
+                </div>
+
+                <!-- Grid de Tarjetas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Tarjeta 1 -->
+                    <div class="glass-card p-8 rounded-3xl space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-void-accent/20 border border-void-neon/30 flex items-center justify-center text-void-neon text-2xl">
+                            <i class="fa-solid fa-dragon"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">Survival Custom</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Mundos personalizados con biomas únicos, jefes finales modificados y un sistema de encantamientos propios del servidor.
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 2 -->
+                    <div class="glass-card p-8 rounded-3xl space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-void-cyan/20 border border-void-cyan/30 flex items-center justify-center text-void-cyan text-2xl">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">Economía Equilibrada</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Tiendas de jugadores (PlayerShops), subastas en tiempo real y trabajos con recompensas escalables para evitar inflación.
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 3 -->
+                    <div class="glass-card p-8 rounded-3xl space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 text-2xl">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">Soporte Crossplay</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Juega sin límites con tus amigos. Conéctate sin importar si usas Minecraft Java Edition o Bedrock (Móvil, Consola, Win10).
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 4 -->
+                    <div class="glass-card p-8 rounded-3xl space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 text-2xl">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">Protección de Terrenos</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Protege tus construcciones fácilmente con claims sencillos de usar. Invita a tus amigos y gestiona permisos con comandos simples.
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 5 -->
+                    <div class="glass-card p-8 rounded-3xl space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">Eventos Semanales</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Torneos PvP, búsquedas del tesoro, carreras en el Nether y eventos especiales de temporada con rangos y premios reales.
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 6 -->
+                    <div class="glass-card p-8 rounded-3xl space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white">Rendimiento 99.9%</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Servidores dedicados de alto rendimiento en constante optimización para garantizar 20 TPS constantes y cero lag.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE TIENDA Y RANGOS PREVIEW -->
+        <section id="tienda" class="py-20 px-4 sm:px-6 lg:px-8 relative">
+            <div class="max-w-7xl mx-auto space-y-12">
+                
+                <div class="text-center space-y-4">
+                    <span class="text-xs font-bold uppercase tracking-widest text-void-cyan">Apoya al servidor</span>
+                    <h2 class="font-display text-3xl sm:text-5xl font-black text-white uppercase">
+                        Tienda y <span class="text-gradient">Rangos VIP</span>
+                    </h2>
+                    <p class="text-gray-400 max-w-xl mx-auto text-base">
+                        Obtén cosméticos exclusivos, rangos con ventajas estéticas y utilidades para destacar en la comunidad.
+                    </p>
+                </div>
+
+                <!-- Showcase de Rangos -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Rango VIP -->
+                    <div class="glass-card p-8 rounded-3xl flex flex-col justify-between border-gray-700/50">
+                        <div class="space-y-4">
+                            <span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 text-xs font-bold inline-block">Básico</span>
+                            <h3 class="font-display text-2xl font-black text-white">VIP</h3>
+                            <div class="text-3xl font-black text-white">$4.99 <span class="text-xs text-gray-400 font-normal">/ permanente</span></div>
+                            <ul class="space-y-3 text-sm text-gray-300 pt-4 border-t border-gray-800">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Prefijo [VIP] en el Chat</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Acceso al comando /fly en sethomes</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> 3 Hogares extra (/sethome)</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Kit VIP semanal</li>
+                            </ul>
+                        </div>
+                        <button onclick="openStoreModal('VIP')" class="w-full mt-8 py-3 rounded-xl bg-gray-800 hover:bg-void-accent text-white font-bold transition-all">
+                            Ver Detalles
+                        </button>
+                    </div>
+
+                    <!-- Rango VOID (Destacado) -->
+                    <div class="glass-panel p-8 rounded-3xl flex flex-col justify-between border-void-neon shadow-neon relative scale-105">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-void-neon text-white font-bold text-xs shadow-md uppercase">
+                            Más Popular
+                        </div>
+                        <div class="space-y-4">
+                            <span class="px-3 py-1 rounded-full bg-purple-500/20 text-void-glow border border-void-neon/40 text-xs font-bold inline-block">Recomendado</span>
+                            <h3 class="font-display text-2xl font-black text-white">HEX VIP</h3>
+                            <div class="text-3xl font-black text-white">$9.99 <span class="text-xs text-gray-400 font-normal">/ permanente</span></div>
+                            <ul class="space-y-3 text-sm text-gray-300 pt-4 border-t border-gray-800">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-void-neon"></i> Todo lo del rango VIP</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-void-neon"></i> Vuelo en todos los Lobbies</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-void-neon"></i> Acceso a Sombreros y Cosméticos</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-void-neon"></i> Prioridad en la cola de entrada</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-void-neon"></i> 7 Hogares extra (/sethome)</li>
+                            </ul>
+                        </div>
+                        <button onclick="openStoreModal('HEX VIP')" class="w-full mt-8 py-3 rounded-xl bg-gradient-to-r from-void-accent to-void-cyan text-white font-bold shadow-neon hover:scale-105 transition-all">
+                            Adquirir Rango
+                        </button>
+                    </div>
+
+                    <!-- Rango GOD -->
+                    <div class="glass-card p-8 rounded-3xl flex flex-col justify-between border-gray-700/50">
+                        <div class="space-y-4">
+                            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold inline-block">Definitivo</span>
+                            <h3 class="font-display text-2xl font-black text-white">VOID GOD</h3>
+                            <div class="text-3xl font-black text-white">$19.99 <span class="text-xs text-gray-400 font-normal">/ permanente</span></div>
+                            <ul class="space-y-3 text-sm text-gray-300 pt-4 border-t border-gray-800">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Beneficios VIP + HEX VIP</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Acceso a la Mochila /enderchest virtual</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Reparación de ítems (/repair)</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Entradas personalizadas al servidor</li>
+                            </ul>
+                        </div>
+                        <button onclick="openStoreModal('VOID GOD')" class="w-full mt-8 py-3 rounded-xl bg-gray-800 hover:bg-void-accent text-white font-bold transition-all">
+                            Ver Detalles
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Enlace Oficial Tienda Tebex -->
+                <div class="text-center pt-8">
+                    <a href="https://tienda.voidhex.lat" target="_blank" class="inline-flex items-center gap-3 text-void-glow hover:text-white font-bold text-lg underline underline-offset-8 transition-colors">
+                        <span>Visitar la Tienda Oficial Completa (Tebex)</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE FAQ / REGLAS -->
+        <section id="faq" class="py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto space-y-12">
+                
+                <div class="text-center space-y-4">
+                    <h2 class="font-display text-3xl sm:text-5xl font-black text-white uppercase">
+                        Preguntas <span class="text-void-neon">Frecuentes</span>
+                    </h2>
+                    <p class="text-gray-400 text-base">¿Tienes dudas sobre cómo ingresar? Aquí respondemos las más comunes.</p>
+                </div>
+
+                <!-- Accordion container -->
+                <div class="space-y-4">
+                    
+                    <!-- Pregunta 1 -->
+                    <div class="glass-card rounded-2xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full p-6 text-left font-bold text-lg text-white flex justify-between items-center gap-4">
+                            <span>¿Cómo me uno desde Bedrock (Móviles / Consolas / Win10)?</span>
+                            <i class="fa-solid fa-chevron-down text-void-neon transition-transform duration-300"></i>
+                        </button>
+                        <div class="hidden p-6 pt-0 text-gray-400 text-sm border-t border-void-accent/10 leading-relaxed">
+                            Para conectarte desde Minecraft Bedrock, usa la IP: <strong class="text-white">play.voidhex.lat</strong> y el Puerto predeterminado: <strong class="text-white">19132</strong>.
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 2 -->
+                    <div class="glass-card rounded-2xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full p-6 text-left font-bold text-lg text-white flex justify-between items-center gap-4">
+                            <span>¿Se necesita cuenta Premium de Minecraft?</span>
+                            <i class="fa-solid fa-chevron-down text-void-neon transition-transform duration-300"></i>
+                        </button>
+                        <div class="hidden p-6 pt-0 text-gray-400 text-sm border-t border-void-accent/10 leading-relaxed">
+                            No, Void Hex acepta tanto usuarios con cuentas Premium como No-Premium. ¡Todos son bienvenidos en nuestra comunidad!
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 3 -->
+                    <div class="glass-card rounded-2xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full p-6 text-left font-bold text-lg text-white flex justify-between items-center gap-4">
+                            <span>¿Cuáles son las reglas principales del servidor?</span>
+                            <i class="fa-solid fa-chevron-down text-void-neon transition-transform duration-300"></i>
+                        </button>
+                        <div class="hidden p-6 pt-0 text-gray-400 text-sm border-t border-void-accent/10 leading-relaxed">
+                            Está prohibido el uso de cheats/hacks, el comportamiento tóxico en el chat y el aprovechamiento de bugs. Consulta la lista completa de reglas en nuestro servidor de Discord.
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 4 -->
+                    <div class="glass-card rounded-2xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full p-6 text-left font-bold text-lg text-white flex justify-between items-center gap-4">
+                            <span>¿Cómo puedo reportar a un jugador o solicitar soporte?</span>
+                            <i class="fa-solid fa-chevron-down text-void-neon transition-transform duration-300"></i>
+                        </button>
+                        <div class="hidden p-6 pt-0 text-gray-400 text-sm border-t border-void-accent/10 leading-relaxed">
+                            Abre un ticket dentro de nuestro servidor de Discord en el canal #soporte. Nuestro equipo de moderadores te atenderá lo antes posible.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="relative z-10 border-t border-void-accent/20 bg-void-900/80 backdrop-blur-md pt-12 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                
+                <!-- Logo & Text -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-void-accent to-void-cyan flex items-center justify-center text-white">
+                        <i class="fa-solid fa-cube text-sm"></i>
+                    </div>
+                    <span class="font-display font-bold text-lg text-white">VOID <span class="text-void-neon">HEX</span></span>
+                </div>
+
+                <!-- Redes Sociales -->
+                <div class="flex items-center gap-6 text-xl">
+                    <a href="https://discord.gg" target="_blank" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fa-brands fa-discord"></i></a>
+                    <a href="https://youtube.com" target="_blank" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://tiktok.com" target="_blank" class="text-gray-400 hover:text-pink-400 transition-colors"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://twitter.com" target="_blank" class="text-gray-400 hover:text-sky-400 transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                </div>
+
+            </div>
+
+            <div class="border-t border-gray-800/60 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+                <p>&copy; 2026 Void Hex Network. Todos los derechos reservados.</p>
+                <p>No estamos afiliados ni respaldados por Mojang AB o Microsoft.</p>
+            </div>
+        </div>
     </footer>
 
+    <!-- TOAST DE NOTIFICACIÓN DE IP COPIADA -->
+    <div id="toast" class="fixed bottom-8 right-8 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass-panel px-6 py-4 rounded-2xl border-void-neon shadow-neon flex items-center gap-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-white text-sm">¡IP Copiada con éxito!</h4>
+                <p class="text-xs text-gray-400">play.voidhex.lat guardada en el portapapeles.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE TIENDA SIMULADO -->
+    <div id="storeModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full p-8 rounded-3xl space-y-6 relative border-void-neon">
+            <button onclick="closeStoreModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="text-center space-y-2">
+                <i class="fa-solid fa-cart-shopping text-4xl text-void-neon"></i>
+                <h3 id="modalRankTitle" class="font-display text-2xl font-black text-white">Rango VIP</h3>
+                <p class="text-gray-400 text-sm">Serás redirigido a la plataforma oficial de pagos seguros (Tebex).</p>
+            </div>
+            <div class="space-y-3">
+                <a href="https://tienda.voidhex.lat" target="_blank" class="block w-full py-3.5 text-center rounded-xl bg-gradient-to-r from-void-accent to-void-cyan text-white font-bold shadow-neon hover:scale-105 transition-all">
+                    Ir a Checkout Seguro
+                </a>
+                <button onclick="closeStoreModal()" class="w-full py-3 text-center rounded-xl bg-gray-800 text-gray-300 font-semibold hover:bg-gray-700 transition-all">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
+        // Copy IP Notification Logic
         function copyIP() {
-            const ipText = document.getElementById('server-ip').innerText;
-            navigator.clipboard.writeText(ipText).then(() => {
-                const alertText = document.getElementById('copy-alert');
-                alertText.style.opacity = '1';
-                setTimeout(() => {
-                    alertText.style.opacity = '0';
-                }, 2000);
-            }).catch(err => {
-                console.error('Error al copiar: ', err);
-            });
+            const ip = "play.voidhex.lat";
+            
+            // Clipboard fallback logic
+            const tempInput = document.createElement("input");
+            tempInput.value = ip;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Toast Animation
+            const toast = document.getElementById("toast");
+            toast.classList.remove("translate-y-32", "opacity-0");
+            toast.classList.add("translate-y-0", "opacity-100");
+
+            setTimeout(() => {
+                toast.classList.remove("translate-y-0", "opacity-100");
+                toast.classList.add("translate-y-32", "opacity-0");
+            }, 3000);
         }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle("hidden");
+        }
+        mobileMenuBtn.addEventListener("click", toggleMobileMenu);
+
+        // FAQ Accordion Toggle
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector("i");
+            
+            content.classList.toggle("hidden");
+            icon.classList.toggle("rotate-180");
+        }
+
+        // Store Modal Handlers
+        function openStoreModal(rankName) {
+            document.getElementById("modalRankTitle").innerText = "Rango " + rankName;
+            const modal = document.getElementById("storeModal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function closeStoreModal() {
+            const modal = document.getElementById("storeModal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        // Simulación ligera de fluctuación de jugadores activos
+        setInterval(() => {
+            const playerCountEl = document.getElementById("playerCount");
+            if (playerCountEl) {
+                let current = parseInt(playerCountEl.innerText);
+                let change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+                let next = Math.max(210, Math.min(480, current + change));
+                playerCountEl.innerText = next;
+            }
+        }, 5000);
+
+        // CANVAS BACKGROUND PARTICLES EFFECT
+        const canvas = document.getElementById('voidCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let particlesArray = [];
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.color = Math.random() > 0.5 ? '#8b5cf6' : '#06b6d4';
+                this.alpha = Math.random() * 0.6 + 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > width) this.speedX *= -1;
+                if (this.y < 0 || this.y > height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = Math.floor((width * height) / 15000);
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Start animations on load
+        window.onload = function() {
+            initParticles();
+            animateParticles();
+        };
     </script>
 </body>
-
 </html>
